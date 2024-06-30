@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy to GitHub Pages and Heroku
 
 on:
   push:
@@ -6,31 +6,42 @@ on:
       - main
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '16'
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
 
-    - name: Install dependencies
-      run: |
-        cd frontend
-        npm install
+      - name: Install frontend dependencies and build
+        working-directory: frontend
+        run: |
+          npm install
+          npm run build
 
-    - name: Build
-      run: |
-        cd frontend
-        npm run build
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
 
-    - name: Deploy
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: frontend/dist
+      - name: Install backend dependencies
+        working-directory: backend
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Start backend server
+        working-directory: backend
+        run: |
+          gunicorn -b 0.0.0.0:5000 main:app  # Replace with your actual startup command
+
+      - name: Deploy frontend to GitHub Pages
+        working-directory: frontend
+        run: |
+          npm run deploy
 
