@@ -1,5 +1,9 @@
 {
-  "dependencies": {
+  "scripts": {
+    "build": "vue-cli-service build",
+    "deploy": "gh-pages -d dist"
+  },
+  "devDependencies": {
     "gh-pages": "^6.1.1"
   }
 }
