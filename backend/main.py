@@ -6,7 +6,6 @@ import json
 from models import db, Product, User, Sessions, ProductsBought, ProductsInBag
 from helperFunctions import hashFunction, isUserValid, createSession
 
-
 app = Flask(__name__)
 app.config.from_object(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True	
