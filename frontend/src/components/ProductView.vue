@@ -8,11 +8,11 @@
           <p v-if="isAddedToBag" class="add-to-bag-info">Added to bag</p>
 				</div>
 				<div class='main-product-image-wrapper'>
-					<img :src="`http://localhost:5000/images/${$route.params.productName}/${imageNames.main}.png`" />
+					<img :src="`http://localhost:5000/images/${$route.params.productName}-${imageNames.main}.png`" />
 				</div>
 				<div class='other-product-images-container flex'>
 					<div v-for='i, x in imageNames.other' :key='x' @click='changeMainImage(i)' class='other-image-wrapper' >
-						<img :src='`http://localhost:5000/images/${$route.params.productName}/${i}.png`' />
+						<img :src='`http://localhost:5000/images/${$route.params.productName}-${i}.png`' />
 					</div>
 				</div>
 			</div>

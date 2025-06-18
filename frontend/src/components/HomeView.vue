@@ -8,17 +8,17 @@
 			</div>
 			<div class='product-text'>
 				<h1 class='product-header'><p>{{currentProduct.split(" ").slice(0, 2).join(" ")}}</p><p>{{currentProduct.split(" ").slice(2).join(" ")}}</p></h1>
-				<img class='product-highlighted-image display-none' :src='`http://localhost:5000/images/${currentProduct}/single.png`' />
+				<img class='product-highlighted-image display-none' :src='`http://localhost:5000/images/${currentProduct}-single.png`' />
 				<p class='product-description'>Ex nesciunt pariatur voluptatem vitae voluptas quis placeat. Quasi laboriosam in tempora quia tenetur veritatis. Necessitatibus quia sint molestiae a quia eos sequi expedita.</p>
 				<div class='product-price-wrapper flex'>
 					<router-link class='add-to-bag-button button' :to="`/product-men-${currentProduct}`" >Add to Bag</router-link>
 					<h2 class='product-price'>200${{currentProduct.price}}</h2>
 				</div>
 			</div>
-			<img class='product-highlighted-image' :src='`http://localhost:5000/images/${currentProduct}/singleHome.png`'/>
+			<img class='product-highlighted-image' :src='`http://localhost:5000/images/${currentProduct}-single.png`'/>
 		</div>
 		<div class='product-images-container flex'>
-			<div v-for="i, x in ['back', 'top', 'side']" :key='x' ><img :src='`http://localhost:5000/images/${currentProduct}/${i}.png`'/></div>
+			<div v-for="i, x in ['back', 'top', 'side']" :key='x' ><img :src='`http://localhost:5000/images/${currentProduct}-${i}.png`'/></div>
 		</div>
 	</div>	
 </template>

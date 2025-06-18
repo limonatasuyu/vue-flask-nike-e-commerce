@@ -1,6 +1,48 @@
 import hashlib
 from uuid import uuid4
-from models import User, Sessions, db
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+from models import Sessions, User
+
+
+def createSession(session: Session, username_email: str) -> str:
+    session_id = uuid4().hex
+
+    stmt = select(User).where(
+        (User.username == username_email) | (User.email == username_email)
+    )
+    user = session.scalar(stmt)
+
+    if user is None:
+        return None
+
+    # Delete existing session for user (if any)
+    stmt_existing = select(Sessions).where(Sessions.userId == user.id)
+    existing_session = session.scalar(stmt_existing)
+
+    if existing_session:
+        session.delete(existing_session)
+        session.commit()
+
+    # Create new session
+    new_session = Sessions(sessionId=session_id, userId=user.id)
+    session.add(new_session)
+    session.commit()
+
+    return session_id
+
+
+def isUserValid(session: Session, username_email: str, password: str) -> bool:
+    stmt = select(User).where(
+        (User.username == username_email) | (User.email == username_email)
+    )
+    user = session.scalar(stmt)
+
+    if user is None or user.password_hash != hashFunction(password):
+        return False
+
+    return True
+
 
 def hashFunction(password):
     m = hashlib.sha1()
@@ -9,26 +51,3 @@ def hashFunction(password):
     m.update(b)
     hashed = m.hexdigest()
     return hashed
-
-def isUserValid(username_email, password_hash):
-    user = User.query.filter_by(username=username_email).first()
-    if user == None:
-        user = User.query.filter_by(email=username_email).first()    
-    if user == None or user.password_hash != hashFunction(password_hash):
-        return False
-    return True
-
-def createSession(username_email): 
-    sessionId = uuid4()
-    user = User.query.filter_by(username=username_email).first()
-    if user == None:
-        user = User.query.filter_by(email=username_email).first()
-    
-    if Sessions.query.filter_by(userId = user.id).first() != None:
-        db.session.delete(Sessions.query.filter_by(userId = user.id).first())
-        db.session.commit()
-    
-    session = Sessions(sessionId=sessionId.hex, userId=user.id)
-    db.session.add(session)
-    db.session.commit()
-    return sessionId.hex

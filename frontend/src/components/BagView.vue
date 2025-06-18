@@ -11,7 +11,7 @@
 			</div>
 			<div v-for='i, x in products' :key='x' class='product-card-container flex'>
 				<div class='product-image-wrapper'>
-					<img class='product-image' :src="`http://localhost:5000/images/${i.name}/side.png`" />
+					<img class='product-image' :src="`http://localhost:5000/images/${i.name}-side.png`" />
 				</div>
 				<p class='product-name'>{{i.name}}</p>
 				<p class='product-price'>{{i.price}}$</p>
