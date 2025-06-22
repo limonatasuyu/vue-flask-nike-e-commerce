@@ -32,7 +32,7 @@ s3 = boto3.client('s3', endpoint_url=R2_ENDPOINT, aws_access_key_id=R2_ACCESS_KE
 
 @app.route('/')
 def Home():
-    return "Flask app running"
+    return "Flask app running, and its deployed from github"
 
 
 @app.route('/products/<filter>')
