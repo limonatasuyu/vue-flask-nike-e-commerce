@@ -1,5 +1,5 @@
 const { defineConfig } = require('@vue/cli-service')
 module.exports = defineConfig({ 
 	transpileDependencies: true,
-  publicPath: '/vue-nike-e-commerce/'
+  publicPath: '/vue-flask-nike-e-commerce/'
 })
