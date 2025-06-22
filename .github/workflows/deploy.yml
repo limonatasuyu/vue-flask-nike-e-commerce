@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages and Heroku
+name: Deploy to AWS Lambda
 
 on:
   push:
@@ -6,46 +6,33 @@ on:
       - main
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-
-      - name: Install frontend dependencies and build
-        working-directory: frontend
-        run: |
-          npm install
-          npm run build
+        uses: actions/checkout@v3
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: "3.11"
 
-      - name: Install backend dependencies
+      - name: Install dependencies
         working-directory: backend
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r requirements.txt -t python
+          cp lambda_function.py python/
+          cp -r . python/
+          cd python
+          zip -r ../function.zip .
 
-      - name: Install gunicorn
-        run: |
-          pip install gunicorn
-
-      - name: Start backend server
-        working-directory: backend
-        run: |
-          gunicorn -b 0.0.0.0:5000 main:app  # Replace with your actual startup command
-
-      - name: Deploy frontend to GitHub Pages
-        working-directory: frontend
-        run: |
-          npm run deploy
-
+      - name: Deploy to Lambda
+        uses: aws-actions/aws-lambda-deploy@v1
+        with:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          function_name: ${{ secrets.LAMBDA_FUNCTION_NAME }}
+          zip_file: backend/function.zip
