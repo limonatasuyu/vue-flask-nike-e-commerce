@@ -18,11 +18,10 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install dependencies into build folder
+      - name: Install dependencies and build Lambda package
         working-directory: backend
-        run: |
+        run: |vi
           mkdir -p build
-          pip install -r requirements.txt -t build/
           cp lambda_function.py build/
           rsync -av --exclude build/ . build/
           cd build
