@@ -20,7 +20,7 @@ jobs:
 
       - name: Install dependencies and build Lambda package
         working-directory: backend
-        run: |vi
+        run: |
           mkdir -p build
           cp lambda_function.py build/
           rsync -av --exclude build/ . build/
