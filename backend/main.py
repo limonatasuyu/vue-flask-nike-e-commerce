@@ -5,12 +5,9 @@ from sqlalchemy import create_engine, select
 from sqlalchemy.orm import Session
 from models import Product, User, Sessions, ProductsInBag
 from helperFunctions import hashFunction, isUserValid, createSession
-from dotenv import load_dotenv
 from flask_cors import CORS
 from botocore.client import Config
 import boto3
-
-load_dotenv()
 
 # Get environment variables
 TURSO_DATABASE_URL = os.getenv("TURSO_DATABASE_URL")
