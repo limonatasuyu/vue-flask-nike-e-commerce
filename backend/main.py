@@ -93,12 +93,14 @@ def products(filter):
 def showImage(filename):
     try:
         s3_object = s3.get_object(Bucket=R2_BUCKET, Key=filename)
-        return Response(
+        response = Response(
             s3_object['Body'].read(),
             content_type=s3_object['ContentType']
         )
+        print("Response from S3:", response)
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        print(jsonify({'error': str(e)}))
+        return jsonify({'error': 'An exception occured'}), 500
 
 
 @app.route('/sign-user', methods=['POST'])
