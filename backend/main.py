@@ -1,5 +1,5 @@
 import os
-from flask import Flask, jsonify, request, make_response, Response
+from flask import Flask, jsonify, request, make_response, send_file
 import json
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import Session
@@ -8,7 +8,6 @@ from helperFunctions import hashFunction, isUserValid, createSession
 from flask_cors import CORS
 from botocore.client import Config
 import boto3
-from flask import send_file
 from io import BytesIO
 from flask_cors import CORS
 
@@ -95,23 +94,32 @@ def products(filter):
 @app.route('/images/<path:filename>')
 def showImage(filename):
     try:
+        # Fetch object from R2
         s3_object = s3.get_object(Bucket=R2_BUCKET, Key=filename)
         body = s3_object['Body'].read()
-        
-        # Debug logs
-        print(f"Serving {filename}: {s3_object['ContentType']}, {len(body)} bytes")
-        print(f"First 8 bytes: {body[:8]}")  # PNG files should start with b'\x89PNG\r\n\x1a\n'
+        content_type = s3_object['ContentType']
 
-        return send_file(
-            BytesIO(body),
-            mimetype=s3_object['ContentType'],
-            download_name=filename,
-            as_attachment=False  # Important: keeps it inline in browser
+        # Debug logs
+        print(f"Serving {filename}: {content_type}, {len(body)} bytes")
+        print(f"First 8 bytes: {body[:8]}")
+
+        # Wrap with make_response and manually set headers
+        flask_response = make_response(
+            send_file(
+                BytesIO(body),
+                mimetype=content_type,
+                download_name=filename,
+                as_attachment=False
+            )
         )
+        flask_response.headers['Content-Type'] = content_type
+        flask_response.headers['Content-Disposition'] = f'inline; filename={filename}'
+
+        return flask_response
+
     except Exception as e:
         print(f"Error: {str(e)}")
         return jsonify({'error': 'An exception occurred'}), 500
-
 
 @app.route('/sign-user', methods=['POST'])
 def signUser():
