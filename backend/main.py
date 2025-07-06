@@ -8,6 +8,9 @@ from helperFunctions import hashFunction, isUserValid, createSession
 from flask_cors import CORS
 from botocore.client import Config
 import boto3
+from flask import send_file
+from io import BytesIO
+from flask_cors import CORS
 
 # Get environment variables
 TURSO_DATABASE_URL = os.getenv("TURSO_DATABASE_URL")
@@ -94,12 +97,20 @@ def showImage(filename):
     try:
         s3_object = s3.get_object(Bucket=R2_BUCKET, Key=filename)
         body = s3_object['Body'].read()
+        
+        # Debug logs
         print(f"Serving {filename}: {s3_object['ContentType']}, {len(body)} bytes")
-        response = Response(body, content_type=s3_object['ContentType'])
-        return response
+        print(f"First 8 bytes: {body[:8]}")  # PNG files should start with b'\x89PNG\r\n\x1a\n'
+
+        return send_file(
+            BytesIO(body),
+            mimetype=s3_object['ContentType'],
+            download_name=filename,
+            as_attachment=False  # Important: keeps it inline in browser
+        )
     except Exception as e:
-        print(jsonify({'error': str(e)}))
-        return jsonify({'error': 'An exception occured'}), 500
+        print(f"Error: {str(e)}")
+        return jsonify({'error': 'An exception occurred'}), 500
 
 
 @app.route('/sign-user', methods=['POST'])
