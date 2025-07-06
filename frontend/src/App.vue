@@ -61,7 +61,7 @@ export default {
 			let payload = {sessionId: this.$cookies.get('sessionId')}
 			
 			let config = {withCredentials: true}
-			axios.post('http://localhost:5000/get-user-data', payload, config)
+			axios.post(`${process.env.VUE_APP_API_URL ?? "http://localhost:5000"}/get-user-data`, payload, config)
 				.then(res => this.userData = res.data.user_data)
 				.catch(err => console.log(err))
 		},
@@ -72,7 +72,7 @@ export default {
 		getBagNumber() {
 			if(!this.$cookies.isKey('sessionId')) return;
 			
-			let url = 'http://localhost:5000/products-in-bag',
+			let url = `${process.env.VUE_APP_API_URL ?? "http://localhost:5000"}/products-in-bag`,
 			payload = {'sessionId': this.$cookies.get('sessionId')},
 			config = {withCredentials: true}
 

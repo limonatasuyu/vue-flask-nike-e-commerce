@@ -11,7 +11,7 @@
 			</div>
 			<div v-for='i, x in products' :key='x' class='product-card-container flex'>
 				<div class='product-image-wrapper'>
-					<img class='product-image' :src="`http://localhost:5000/images/${i.name}-side.png`" />
+					<img class='product-image' :src="`${baseUrl}/images/${i.name}-side.png`" />
 				</div>
 				<p class='product-name'>{{i.name}}</p>
 				<p class='product-price'>{{i.price}}$</p>
@@ -35,12 +35,13 @@ export default {
 			products: [],
 			totalPrice: 0,
       rawProductData: null,
+			baseUrl: process.env.VUE_APP_API_URL || 'http://localhost:5000'
 		}
 	},
 	props:['changeActiveNav', 'userData', 'getUserInfo', 'decreaseBagNumber'],
 	methods: {
 		getProducts() {
-			let url = 'http://localhost:5000/products-in-bag'
+			let url = `${process.env.VUE_APP_API_URL ?? "http://localhost:5000"}/products-in-bag`
 			let sessionId = this.$cookies.get('sessionId')
 			let payload = {sessionId: sessionId}
 			let config = {withCredentials: true}
@@ -52,7 +53,7 @@ export default {
       if (this.rawProductData.length === 0) {this.products = []; return}
       let productIds = []
       for (let i of this.rawProductData) {productIds = [...productIds, i.id]}
-			let url = `http://localhost:5000/products/${productIds.toString()}`
+			let url = `${process.env.VUE_APP_API_URL ?? "http://localhost:5000"}/products/${productIds.toString()}`
 			axios.get(url)
 				.then(res => this.products = res.data)
 				.catch(err => console.log(err))
@@ -68,7 +69,7 @@ export default {
       let payload = {'sessionId': sessionId, 'productId': id, 'size': size}
 			let config = {withCredentials: true}
 			let options = {data: payload, config: config}
-			axios.delete('http://localhost:5000/update-bag', options)
+			axios.delete(`${process.env.VUE_APP_API_URL ?? "http://localhost:5000"}/update-bag`, options)
 				.then(res => {
 					console.log(res)
 					if (res.data.success === true) {

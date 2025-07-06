@@ -52,7 +52,7 @@
 			<router-link v-for='product in productData' :key='product.id' :to="`/product-${$route.params.gender}-${product.name}`" class='single-product-container grid'>
 				<div class='product-image-wrapper-wrapper flex'>
 					<div class='product-image-wrapper flex'>	
-						<img class='product-image' :src="`http://localhost:5000/images/${product.name}-side.png`" />
+						<img class='product-image' :src="`${baseUrl}/images/${product.name}-side.png`" />
 					</div>
 				</div>
 				<div class='product-text'>
@@ -76,6 +76,7 @@ export default {
 			appliedSizes: [],
 			productData: null,
 			productDataUnfiltered: null,
+			baseUrl: process.env.VUE_APP_API_URL || 'http://localhost:5000',
 		}
 	},
 	methods: {

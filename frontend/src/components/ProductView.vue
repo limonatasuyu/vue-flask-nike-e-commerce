@@ -8,11 +8,11 @@
           <p v-if="isAddedToBag" class="add-to-bag-info">Added to bag</p>
 				</div>
 				<div class='main-product-image-wrapper'>
-					<img :src="`http://localhost:5000/images/${$route.params.productName}-${imageNames.main}.png`" />
+					<img :src="`${baseUrl}/images/${$route.params.productName}-${imageNames.main}.png`" />
 				</div>
 				<div class='other-product-images-container flex'>
 					<div v-for='i, x in imageNames.other' :key='x' @click='changeMainImage(i)' class='other-image-wrapper' >
-						<img :src='`http://localhost:5000/images/${$route.params.productName}-${i}.png`' />
+						<img :src='`${baseUrl}/images/${$route.params.productName}-${i}.png`' />
 					</div>
 				</div>
 			</div>
@@ -48,8 +48,9 @@ export default {
 				other: ['single', 'top', 'back']
 			},
 			productData: {},
-      choosenSize: null,
+      choosenSize: null,	
       isAddedToBag: false,
+			baseUrl: process.env.VUE_APP_API_URL || 'http://localhost:5000',
 		}
 	},
 	methods: {
@@ -58,7 +59,7 @@ export default {
 			this.imageNames.main = imgName;
 		},
 		getProductInfo() {
-			let url = `http://localhost:5000/products/${this.$route.params.productName}`
+			let url = `${process.env.VUE_APP_API_URL || 'http://localhost:5000'}/products/${this.$route.params.productName}`
 			axios.get(url)
 				.then(res => {this.productData = res.data; console.log(res.data)})
 				.catch(err => console.log(err))
@@ -76,7 +77,7 @@ export default {
     addToBag() {
       if (!this.$cookies.isKey('sessionId')) {this.toggleLogin(); alert('please login first'); return}
       if (this.choosenSize === null) {alert('please choose a size first'); return}
-			let url = 'http://localhost:5000/update-bag'
+			let url = `${process.env.VUE_APP_API_URL || 'http://localhost:5000'}/update-bag`
 			let sessionId = this.$cookies.get('sessionId')
 			let productName = this.$route.params.productName
 			let payload = {

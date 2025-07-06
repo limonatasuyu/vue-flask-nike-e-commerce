@@ -79,7 +79,7 @@ export default {
 			}
 
 			let config = {withCredentials: true}
-			let url = 'http://localhost:5000/update-user'
+			let url = `${process.env.VUE_APP_API_URL ?? "http://localhost:5000"}/update-user`
 			
 			axios.put(url, payload, config)
 				.then((res) => {

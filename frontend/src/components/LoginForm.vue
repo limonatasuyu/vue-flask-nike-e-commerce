@@ -47,7 +47,7 @@ export default {
 				withCredentials: true
 			}
 
-			axios.post('http://localhost:5000/log-user', payload, config)
+			axios.post(`${process.env.VUE_APP_API_URL ?? "http://localhost:5000"}/log-user`, payload, config)
 				.then((res) => {this.postResponse = res.data})
 				.catch(err => console.log(err))
 

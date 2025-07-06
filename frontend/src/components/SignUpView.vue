@@ -73,7 +73,7 @@ export default {
 				password: this.password
 			}
 			
-			axios.post('http://localhost:5000/sign-user', payload)
+			axios.post(`${process.env.VUE_APP_API_URL ?? "http://localhost:5000"}/sign-user`, payload)
 				.then(res => {this.postResponse = res; console.log(res.data)})
 				.catch(err => console.log(err))
 
