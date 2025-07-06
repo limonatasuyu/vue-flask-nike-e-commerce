@@ -97,7 +97,7 @@ def showImage(filename):
             s3_object['Body'].read(),
             content_type=s3_object['ContentType']
         )
-        print("Response from S3:", response)
+        print(f"Serving {filename}: {s3_object['ContentType']}, {len(s3_object['Body'].read())} bytes")
         return response
     except Exception as e:
         print(jsonify({'error': str(e)}))
