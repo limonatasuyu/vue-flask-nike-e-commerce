@@ -18,12 +18,13 @@ R2_ENDPOINT = os.getenv("R2_ENDPOINT")
 R2_ACCESS_KEY_ID = os.getenv("R2_ACCESS_KEY_ID")
 R2_SECRET_ACCESS_KEY = os.getenv("R2_SECRET_ACCESS_KEY")
 R2_BUCKET = os.getenv("R2_BUCKET")
+CORS_ORIGIN = os.getenv("CORS_ORIGIN")
 
 # construct special SQLAlchemy URL
 dbUrl = f"sqlite+{TURSO_DATABASE_URL}/?secure=true"
 engine = create_engine(dbUrl, connect_args={"auth_token": os.getenv("TURSO_AUTH_TOKEN")}, echo=True)
 app = Flask(__name__)
-CORS(app, origins='http://localhost:8080', supports_credentials=True)
+CORS(app, origins={CORS_ORIGIN}, supports_credentials=True)
 
 # Initialize S3 client
 s3 = boto3.client('s3', endpoint_url=R2_ENDPOINT, aws_access_key_id=R2_ACCESS_KEY_ID, aws_secret_access_key=R2_SECRET_ACCESS_KEY, config=Config(signature_version='s3v4'), region_name='auto')
