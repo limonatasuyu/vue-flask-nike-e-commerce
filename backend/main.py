@@ -98,6 +98,7 @@ def showImage(filename):
             content_type=s3_object['ContentType']
         )
         print("Response from S3:", response)
+        return response
     except Exception as e:
         print(jsonify({'error': str(e)}))
         return jsonify({'error': 'An exception occured'}), 500
