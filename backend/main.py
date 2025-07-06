@@ -93,11 +93,9 @@ def products(filter):
 def showImage(filename):
     try:
         s3_object = s3.get_object(Bucket=R2_BUCKET, Key=filename)
-        response = Response(
-            s3_object['Body'].read(),
-            content_type=s3_object['ContentType']
-        )
-        print(f"Serving {filename}: {s3_object['ContentType']}, {len(s3_object['Body'].read())} bytes")
+        body = s3_object['Body'].read()
+        print(f"Serving {filename}: {s3_object['ContentType']}, {len(body)} bytes")
+        response = Response(body, content_type=s3_object['ContentType'])
         return response
     except Exception as e:
         print(jsonify({'error': str(e)}))
